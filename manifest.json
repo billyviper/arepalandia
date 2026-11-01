@@ -3,7 +3,7 @@
   "short_name": "Arepalandia",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#fbf5e8",
+  "background_color": "#ffffff",
   "theme_color": "#1d3a8a",
   "lang": "es",
   "icons": [
