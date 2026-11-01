@@ -56,6 +56,7 @@ footer{text-align:center;color:var(--suave);font-size:.8rem;margin-top:30px}
   <p id="sub">Cargando…</p>
 </header>
 <main>
+  <button id="instalar" class="b-amarillo" style="display:none">📲 Instalar la app en este celular</button>
   <section>
     <h2>Hoy toca publicar</h2>
     <div id="hoy"></div>
@@ -209,6 +210,13 @@ async function iniciar(){
 }
 iniciar();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+let pedidoInstalar = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pedidoInstalar = e; $('#instalar').style.display = 'block'; });
+$('#instalar').addEventListener('click', async () => {
+  if (!pedidoInstalar) return;
+  pedidoInstalar.prompt(); await pedidoInstalar.userChoice; pedidoInstalar = null; $('#instalar').style.display = 'none';
+});
+window.addEventListener('appinstalled', () => { $('#instalar').style.display = 'none'; });
 </script>
 </body>
 </html>
