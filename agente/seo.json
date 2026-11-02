@@ -1,5 +1,5 @@
 {
- "nota": "Banco de hashtags y palabras de búsqueda de Arepalandia. seo.py lo usa para completar las publicaciones de Instagram del plan.",
+ "nota": "Banco de hashtags y palabras de búsqueda de Arepalandia. seo.py lo usa para completar las publicaciones de Instagram del plan. Instagram acepta hasta 5 hashtags por publicación (2026).",
  "lugar": [
   "#Mercedes",
   "#MercedesUruguay",
@@ -104,5 +104,5 @@
   "dónde comer en Mercedes de noche",
   "comida para llevar Mercedes"
  ],
- "maximo_hashtags": 12
+ "maximo_hashtags": 5
 }

@@ -35,8 +35,11 @@ for p in plan["publicaciones"]:
     prods = productos_de(p)
     tags = []
     for k in reversed(prods):
-        tags += seo["productos"][k]["hashtags"]
-    tags += seo["lugar"][:3] + seo["rubro"][:2] + seo["servicio"][:1] + seo["marca"]
+        tags += seo["productos"][k]["hashtags"][:1]
+    if len(tags) < 2 and prods:
+        tags += seo["productos"][prods[-1]]["hashtags"][1:2]
+    # Instagram permite 5: producto (2) + lugar + rubro + marca
+    tags = tags[:2] + seo["lugar"][:1] + seo["rubro"][:1] + seo["marca"]
     tags = list(dict.fromkeys(tags))[: seo["maximo_hashtags"]]
     frases = [seo["productos"][k]["frase"] for k in prods if seo["productos"][k]["frase"]]
     frase = frases[-1] if frases else "comida venezolana en Mercedes"

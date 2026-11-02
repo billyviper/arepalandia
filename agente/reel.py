@@ -20,8 +20,8 @@ for i,(n,ss,dur,txt) in enumerate(tomas):
     z=1.18 if n==22 else 1.0  # el clip 22 trae la marca de CapCut arriba a la derecha: lo acercamos y recortamos de abajo
     zw,zh=int(W*z)//2*2,int(H*z)//2*2
     vf=(f"[0:v]scale={zw}:{zh}:force_original_aspect_ratio=increase,crop={W}:{H}:(in_w-{W})/2:in_h-{H},setsar=1,fps=30,"
-        f"eq=saturation=1.15:contrast=1.04[v];[1:v]format=rgba,fade=in:st=0.15:d=0.25:alpha=1[t];[v][t]overlay=0:0,"
-        f"fade=in:st=0:d=0.15,fade=out:st={dur-0.15}:d=0.15[o]")
+        f"eq=saturation=1.15:contrast=1.04[v];[1:v]format=rgba{'' if i==0 else ',fade=in:st=0.15:d=0.25:alpha=1'}[t];[v][t]overlay=0:0,"
+        f"{'' if i==0 else 'fade=in:st=0:d=0.15,'}fade=out:st={dur-0.15}:d=0.15[o]")
     subprocess.run(['ffmpeg','-v','error','-y','-ss',str(ss),'-t',str(dur),'-i',nom(n),'-loop','1','-t',str(dur),'-i',png,
         '-filter_complex',vf,'-map','[o]','-an','-c:v','libx264','-pix_fmt','yuv420p','-r','30',out],check=True)
     partes.append(out)
