@@ -33,6 +33,21 @@ Compu del local + impresora ── navegador en /local (PIN) ──────�
 - **Horario**: fuera de los turnos de `config.json` (`turnos`, 0 = lunes) la página muestra "Ahora estamos cerrados" y no acepta pedidos. `solo_en_horario: false` lo desactiva.
 - **PIN**: 5 intentos fallidos desde la misma dirección bloquean 15 minutos. Usar un PIN de 6 dígitos o más.
 
+## Instalar
+
+**Servidor en casa (Ubuntu):** con el usuario `arepalandia`, en una terminal:
+
+```
+curl -fsSL https://raw.githubusercontent.com/billyviper/arepalandia/main/pedidos/instalar.sh -o instalar.sh
+bash instalar.sh                                  # servicio, copia diaria, sin suspender
+bash instalar.sh prueba                           # link temporal para probar desde internet
+bash instalar.sh tunel pedidos.midominio.com      # link fijo cuando tengan el dominio en Cloudflare
+```
+
+Si ponés un `config.json` en la carpeta personal antes de correrlo, lo usa; si no, pregunta PIN y datos del banco.
+
+**Compu del local (Windows):** poner la impresora térmica como predeterminada, cambiar el link en `windows/abrir-local.bat` y copiarlo a la carpeta de inicio (`Win+R` → `shell:startup`). Abre la pantalla del local en su propia ventana e imprime sin preguntar.
+
 ## Pendiente para instalar en la compu
 
 - Servidor en casa: arranque automático (servicio de systemd), BIOS en "encender al volver la luz", y que no se suspenda.
