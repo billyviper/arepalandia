@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d3a8a">
+<title>Pedí en Arepalandia</title>
+<style>
+:root{--azul:#1d3a8a;--amarillo:#f6c624;--rojo:#c8202f;--fondo:#fbf5e8;--borde:#e6dcc6;--suave:#5c5c5c;--ok:#1e7a3c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:#1b1b1b;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.4}
+header{background:var(--azul);color:#fff;padding:18px 16px 14px;text-align:center}
+header h1{margin:0;font-size:1.6rem;letter-spacing:1px;color:var(--amarillo)}
+header p{margin:2px 0 0;font-size:.85rem;letter-spacing:3px}
+main{max-width:560px;margin:0 auto;padding:12px 16px 140px}
+h2{color:var(--azul);font-size:1.15rem;margin:22px 0 8px;border-bottom:3px solid var(--amarillo);display:inline-block}
+.prod{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.prod.agotado{opacity:.5}
+.num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--amarillo);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.info{flex:1;min-width:0}
+.info b{display:block}
+.info small{color:var(--suave);display:block}
+.precio{color:var(--rojo);font-weight:800;font-size:1.1rem;white-space:nowrap}
+.quedan{color:var(--rojo);font-size:.8rem;font-weight:700}
+.ctrl{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.ctrl select{font-size:1rem;padding:8px;border-radius:10px;border:1px solid var(--borde);background:#fff}
+.mas,.menos{width:40px;height:40px;border-radius:50%;border:0;font-size:1.4rem;font-weight:700;cursor:pointer}
+.mas{background:var(--azul);color:#fff}.menos{background:#ece6d8}
+.cant{min-width:22px;text-align:center;font-weight:700}
+.en-carrito{font-size:.85rem;color:var(--ok);margin-top:6px}
+.barra{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--borde);padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -2px 8px rgba(0,0,0,.06)}
+.barra .in{max-width:560px;margin:0 auto}
+button.grande{display:block;width:100%;border:0;border-radius:12px;padding:15px;font-size:1.1rem;font-weight:700;cursor:pointer;background:var(--azul);color:#fff}
+button.grande:disabled{background:#b9b9b9}
+button.verde{background:var(--ok)}
+button.gris{background:#ece6d8;color:#333}
+.caja{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:14px;margin-bottom:12px}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input[type=text],input[type=tel],input[type=number],select,textarea{width:100%;font-size:1rem;padding:12px;border:1px solid var(--borde);border-radius:10px;background:#fff;font-family:inherit}
+.opciones{display:flex;gap:8px;flex-wrap:wrap}
+.opciones label{flex:1;margin:0;border:2px solid var(--borde);border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-weight:700}
+.opciones input{display:none}
+.opciones input:checked+span{color:var(--azul)}
+.opciones label:has(input:checked){border-color:var(--azul);background:#eef2fb}
+.fila{display:flex;justify-content:space-between;margin:4px 0}
+.total{font-size:1.25rem;font-weight:800;border-top:1px solid var(--borde);padding-top:8px;margin-top:8px}
+.banco{background:#fff8dd;border-radius:10px;padding:12px;margin-top:8px;font-size:.95rem}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:.9rem}
+.check input{width:22px;height:22px;flex:0 0 22px;margin-top:2px}
+.error{background:#fde8ea;color:var(--rojo);border-radius:10px;padding:12px;margin:12px 0;font-weight:600;display:none}
+.listo{text-align:center;padding:30px 10px}
+.listo .grande-num{font-size:2.6rem;font-weight:800;color:var(--azul)}
+.oculto{display:none!important}
+.nota{color:var(--suave);font-size:.85rem}
+</style>
+</head>
+<body>
+<header><h1>AREPALANDIA</h1><p>SABOR VENEZOLANO</p></header>
+<main>
+  <section id="paso-menu">
+    <p class="nota" id="horario"></p>
+    <div id="menu">Cargando el menú…</div>
+  </section>
+
+  <section id="paso-datos" class="oculto">
+    <h2>Tu pedido</h2>
+    <div class="caja" id="resumen"></div>
+    <div class="caja">
+      <label for="nombre">Tu nombre</label>
+      <input id="nombre" type="text" autocomplete="name" maxlength="60">
+      <label for="telefono">Tu celular</label>
+      <input id="telefono" type="tel" autocomplete="tel" placeholder="09X XXX XXX" maxlength="20">
+      <label>¿Cómo lo querés?</label>
+      <div class="opciones">
+        <label><input type="radio" name="entrega" value="delivery"><span>🛵 Delivery</span></label>
+        <label><input type="radio" name="entrega" value="retiro"><span>🏠 Lo retiro</span></label>
+      </div>
+      <div id="bloque-direccion" class="oculto">
+        <label for="direccion">Dirección</label>
+        <input id="direccion" type="text" autocomplete="street-address" placeholder="Calle, número y esquina" maxlength="160">
+        <p class="nota" id="nota-envio"></p>
+      </div>
+    </div>
+    <div class="caja">
+      <label>¿Cómo pagás?</label>
+      <div class="opciones">
+        <label><input type="radio" name="pago" value="efectivo"><span>💵 Efectivo</span></label>
+        <label><input type="radio" name="pago" value="transferencia"><span>🏦 Transferencia</span></label>
+      </div>
+      <div id="bloque-efectivo" class="oculto">
+        <label for="paga_con">¿Con cuánto pagás? (para llevarte el cambio)</label>
+        <input id="paga_con" type="number" inputmode="numeric" min="0" step="10">
+        <p class="nota" id="cambio"></p>
+      </div>
+      <div id="bloque-transferencia" class="oculto">
+        <div class="banco" id="datos-banco"></div>
+        <button class="grande gris" type="button" id="copiar-cuenta" style="margin-top:8px">Copiar cuenta (mismo banco)</button>
+        <button class="grande gris" type="button" id="copiar-otros" style="margin-top:8px">Copiar cuenta (otros bancos)</button>
+        <label for="comprobante">Subí la foto del comprobante</label>
+        <input id="comprobante" type="file" accept="image/*,application/pdf">
+      </div>
+    </div>
+    <div class="caja">
+      <label for="cumple-dia">Tu cumpleaños (opcional)</label>
+      <div style="display:flex;gap:8px">
+        <select id="cumple-dia"><option value="">Día</option></select>
+        <select id="cumple-mes"><option value="">Mes</option></select>
+      </div>
+      <p class="nota">Para mandarte un saludo y una sorpresa ese día.</p>
+      <label for="origen">¿Cómo nos conociste?</label>
+      <select id="origen">
+        <option value="">Elegí una opción</option>
+        <option>Instagram</option><option>Estado de WhatsApp</option><option>Un amigo</option>
+        <option>Pasé por el local</option><option>Ya soy cliente</option><option>Otro</option>
+      </select>
+      <label for="nota">¿Algo más? (opcional)</label>
+      <textarea id="nota" rows="2" maxlength="200" placeholder="Ej.: sin cebolla, timbre roto"></textarea>
+      <label class="check"><input type="checkbox" id="acepta"> <span>Acepto que Arepalandia guarde mi nombre, celular y cumpleaños para tomar mis pedidos y mandarme saludos y promos. Puedo pedir que los borren cuando quiera.</span></label>
+    </div>
+    <div class="error" id="error"></div>
+  </section>
+
+  <section id="paso-listo" class="oculto listo">
+    <p>¡Recibimos tu pedido!</p>
+    <div class="grande-num" id="num-pedido"></div>
+    <p id="listo-texto"></p>
+    <button class="grande verde" id="mandar-wa">Avisar por WhatsApp</button>
+    <p class="nota">Si tenés dudas escribinos al <b>091 507 257</b>.</p>
+  </section>
+</main>
+
+<div class="barra" id="barra">
+  <div class="in">
+    <button class="grande" id="boton-principal" disabled>Elegí lo que quieras</button>
+    <button class="grande gris oculto" id="volver" style="margin-top:8px">Volver al menú</button>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const pesos = n => '$' + Number(n).toLocaleString('es-UY');
+let negocio = {}, productos = [], carrito = {}; // clave "numero|opcion" -> cantidad
+const params = new URLSearchParams(location.search);
+let paso = 'menu', enviando = false, ultimo = null;
+
+function clave(num, op){ return num + '|' + (op || ''); }
+function cantidadDe(num){ return Object.entries(carrito).filter(([k]) => k.startsWith(num + '|')).reduce((a, [,c]) => a + c, 0); }
+function subtotal(){ return Object.entries(carrito).reduce((a, [k, c]) => a + productos.find(p => p.numero == k.split('|')[0]).precio * c, 0); }
+function envio(){ const e = document.querySelector('input[name=entrega]:checked'); return e && e.value === 'delivery' && subtotal() < negocio.envio_gratis_desde ? negocio.envio_costo : 0; }
+function total(){ return subtotal() + envio(); }
+
+async function cargar(){
+  try {
+    const r = await fetch('/api/menu'); const d = await r.json();
+    negocio = d.negocio; productos = d.productos;
+  } catch { $('#menu').textContent = 'No se pudo cargar el menú. Probá de nuevo en un rato.'; return; }
+  $('#horario').textContent = negocio.horario;
+  $('#nota-envio').textContent = `Envío ${pesos(negocio.envio_costo)}. Gratis en pedidos desde ${pesos(negocio.envio_gratis_desde)}.`;
+  const b = negocio.banco;
+  $('#datos-banco').innerHTML = `<b>${b.banco}</b><br>${b.tipo}<br>Cuenta: <b>${b.numero}</b><br>Desde otros bancos: <b>${b.numero_otros_bancos}</b><br>Titular: ${b.titular}`;
+  pintarMenu(); actualizar();
+}
+
+function pintarMenu(){
+  const cont = $('#menu'); cont.innerHTML = '';
+  let cat = '';
+  for (const p of productos){
+    if (p.categoria !== cat){ cat = p.categoria; const h = document.createElement('h2'); h.textContent = cat; cont.appendChild(h); }
+    const d = document.createElement('div'); d.className = 'prod' + (p.stock === 0 ? ' agotado' : '');
+    const quedan = p.stock === 0 ? '<span class="quedan">Agotado por hoy</span>' : (p.stock !== null && p.stock <= 5 ? `<span class="quedan">Quedan ${p.stock}</span>` : '');
+    d.innerHTML = `<div class="num">${p.numero}</div><div class="info"><b></b><small></small>${quedan}<div class="ctrl"></div><div class="en-carrito"></div></div><div class="precio">${pesos(p.precio)}</div>`;
+    d.querySelector('b').textContent = p.nombre; d.querySelector('small').textContent = p.detalle || '';
+    const ctrl = d.querySelector('.ctrl');
+    if (p.stock !== 0){
+      let sel = null;
+      if (p.opciones.length){
+        sel = document.createElement('select');
+        sel.innerHTML = '<option value="">Elegí el relleno</option>' + p.opciones.map(o => `<option>${o}</option>`).join('');
+        ctrl.appendChild(sel);
+      }
+      const menos = document.createElement('button'); menos.className = 'menos'; menos.textContent = '−'; menos.setAttribute('aria-label', 'Sacar uno');
+      const cant = document.createElement('span'); cant.className = 'cant';
+      const mas = document.createElement('button'); mas.className = 'mas'; mas.textContent = '+'; mas.setAttribute('aria-label', 'Agregar uno');
+      const ver = () => { const op = sel ? sel.value : ''; cant.textContent = carrito[clave(p.numero, op)] || 0; };
+      mas.onclick = () => {
+        const op = sel ? sel.value : '';
+        if (sel && !op){ sel.focus(); sel.style.borderColor = 'var(--rojo)'; return; }
+        if (p.stock !== null && cantidadDe(p.numero) >= p.stock){ aviso(`Quedan ${p.stock}`); return; }
+        carrito[clave(p.numero, op)] = (carrito[clave(p.numero, op)] || 0) + 1; ver(); actualizar(); resumenProd(d, p);
+      };
+      menos.onclick = () => {
+        const k = clave(p.numero, sel ? sel.value : '');
+        if (carrito[k]){ carrito[k]--; if (!carrito[k]) delete carrito[k]; } ver(); actualizar(); resumenProd(d, p);
+      };
+      if (sel) sel.onchange = () => { sel.style.borderColor = ''; ver(); };
+      ctrl.append(menos, cant, mas); ver();
+    }
+    cont.appendChild(d);
+  }
+}
+function resumenProd(d, p){
+  const partes = Object.entries(carrito).filter(([k]) => k.startsWith(p.numero + '|')).map(([k, c]) => c + (k.split('|')[1] ? ' de ' + k.split('|')[1].toLowerCase() : ''));
+  d.querySelector('.en-carrito').textContent = partes.length ? '✓ En tu pedido: ' + partes.join(', ') : '';
+}
+function aviso(t){ alert(t); }
+
+function actualizar(){
+  const bp = $('#boton-principal'), n = Object.values(carrito).reduce((a, b) => a + b, 0);
+  if (paso === 'menu'){
+    bp.disabled = n === 0;
+    bp.textContent = n ? `Ver mi pedido (${n}) · ${pesos(subtotal())}` : 'Elegí lo que quieras';
+  } else if (paso === 'datos'){
+    bp.disabled = enviando;
+    bp.textContent = enviando ? 'Enviando…' : `Confirmar pedido · ${pesos(total())}`;
+    pintarResumen();
+  }
+}
+function pintarResumen(){
+  let h = '';
+  for (const [k, c] of Object.entries(carrito)){
+    const [num, op] = k.split('|'); const p = productos.find(x => x.numero == num);
+    h += `<div class="fila"><span>${c} × ${p.nombre}${op ? ' (' + op + ')' : ''}</span><span>${pesos(p.precio * c)}</span></div>`;
+  }
+  const e = envio();
+  const ent = document.querySelector('input[name=entrega]:checked');
+  if (ent && ent.value === 'delivery') h += `<div class="fila"><span>Envío</span><span>${e ? pesos(e) : 'Gratis'}</span></div>`;
+  h += `<div class="fila total"><span>Total</span><span>${pesos(total())}</span></div>`;
+  $('#resumen').innerHTML = h;
+  const pc = Number($('#paga_con').value);
+  $('#cambio').textContent = pc ? (pc >= total() ? `Te llevamos ${pesos(pc - total())} de cambio.` : `El total es ${pesos(total())}.`) : '';
+}
+
+function irA(p){
+  paso = p;
+  $('#paso-menu').classList.toggle('oculto', p !== 'menu');
+  $('#paso-datos').classList.toggle('oculto', p !== 'datos');
+  $('#paso-listo').classList.toggle('oculto', p !== 'listo');
+  $('#barra').classList.toggle('oculto', p === 'listo');
+  $('#volver').classList.toggle('oculto', p !== 'datos');
+  window.scrollTo(0, 0); actualizar();
+}
+
+function error(t){ const e = $('#error'); e.textContent = t; e.style.display = t ? 'block' : 'none'; if (t) e.scrollIntoView({behavior:'smooth', block:'center'}); }
+
+async function confirmar(){
+  error('');
+  const entrega = document.querySelector('input[name=entrega]:checked'), pago = document.querySelector('input[name=pago]:checked');
+  const dia = $('#cumple-dia').value, mes = $('#cumple-mes').value;
+  if (!$('#nombre').value.trim()) return error('Poné tu nombre.');
+  if ($('#telefono').value.replace(/\D/g, '').length < 8) return error('Poné tu celular.');
+  if (!entrega) return error('Elegí delivery o retiro.');
+  if (entrega.value === 'delivery' && !$('#direccion').value.trim()) return error('Poné la dirección.');
+  if (!pago) return error('Elegí cómo pagás.');
+  if (pago.value === 'transferencia' && !$('#comprobante').files.length) return error('Subí la foto del comprobante.');
+  if ((dia && !mes) || (!dia && mes)) return error('Para el cumpleaños poné día y mes.');
+  const pedido = {
+    items: Object.entries(carrito).map(([k, c]) => ({numero: Number(k.split('|')[0]), opcion: k.split('|')[1], cantidad: c})),
+    nombre: $('#nombre').value, telefono: $('#telefono').value, entrega: entrega.value, direccion: $('#direccion').value,
+    pago: pago.value, paga_con: pago.value === 'efectivo' && entrega.value === 'delivery' ? $('#paga_con').value : '',
+    cumple: dia && mes ? `${dia}-${mes}` : '', acepta_datos: $('#acepta').checked,
+    origen: params.get('ref') ? params.get('ref') + ' / ' + $('#origen').value : $('#origen').value, nota: $('#nota').value
+  };
+  const fd = new FormData(); fd.append('pedido', JSON.stringify(pedido));
+  if (pago.value === 'transferencia') fd.append('comprobante', $('#comprobante').files[0]);
+  enviando = true; actualizar();
+  try {
+    const r = await fetch('/api/pedidos', {method: 'POST', body: fd}); const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'No se pudo enviar.');
+    ultimo = d; carrito = {};
+    $('#num-pedido').textContent = '#' + d.pedido.id;
+    $('#listo-texto').textContent = d.pedido.entrega === 'delivery' ? 'Ya lo estamos preparando y te lo llevamos.' : 'Ya lo estamos preparando. Te avisamos cuando esté listo para retirar.';
+    irA('listo');
+  } catch (e) { error(e.message); }
+  enviando = false; actualizar();
+}
+
+$('#boton-principal').onclick = () => paso === 'menu' ? irA('datos') : confirmar();
+$('#volver').onclick = () => { pintarMenu(); irA('menu'); };
+document.querySelectorAll('input[name=entrega]').forEach(r => r.onchange = () => {
+  $('#bloque-direccion').classList.toggle('oculto', r.value !== 'delivery' || !r.checked);
+  $('#bloque-efectivo').classList.toggle('oculto', !(document.querySelector('input[name=pago]:checked')?.value === 'efectivo' && r.value === 'delivery'));
+  actualizar();
+});
+document.querySelectorAll('input[name=pago]').forEach(r => r.onchange = () => {
+  const ent = document.querySelector('input[name=entrega]:checked')?.value;
+  $('#bloque-efectivo').classList.toggle('oculto', r.value !== 'efectivo' || ent !== 'delivery');
+  $('#bloque-transferencia').classList.toggle('oculto', r.value !== 'transferencia');
+  actualizar();
+});
+$('#paga_con').oninput = actualizar;
+const copiar = (btn, n) => async () => { try { await navigator.clipboard.writeText(n()); btn.textContent = '¡Copiado!'; } catch { aviso('Cuenta: ' + n()); } };
+$('#copiar-cuenta').onclick = copiar($('#copiar-cuenta'), () => negocio.banco.numero);
+$('#copiar-otros').onclick = copiar($('#copiar-otros'), () => negocio.banco.numero_otros_bancos);
+$('#mandar-wa').onclick = () => { if (ultimo) location.href = `https://wa.me/${ultimo.whatsapp}?text=${encodeURIComponent(ultimo.mensaje)}`; };
+for (let i = 1; i <= 31; i++) $('#cumple-dia').insertAdjacentHTML('beforeend', `<option value="${String(i).padStart(2, '0')}">${i}</option>`);
+['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m, i) => $('#cumple-mes').insertAdjacentHTML('beforeend', `<option value="${String(i + 1).padStart(2, '0')}">${m}</option>`));
+cargar();
+</script>
+</body>
+</html>

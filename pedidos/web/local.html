@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1d3a8a">
+<title>Arepalandia · Local</title>
+<style>
+:root{--azul:#1d3a8a;--amarillo:#f6c624;--rojo:#c8202f;--fondo:#fbf5e8;--borde:#e6dcc6;--suave:#5c5c5c;--ok:#1e7a3c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:#1b1b1b;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px}
+header{background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:1.2rem;color:var(--amarillo);margin-right:auto}
+nav button{background:transparent;color:#fff;border:2px solid transparent;border-radius:10px;padding:8px 12px;font-size:1rem;font-weight:700;cursor:pointer}
+nav button.activo{border-color:var(--amarillo);color:var(--amarillo)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.oculto{display:none!important}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.ped{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:14px;border-left:6px solid var(--borde)}
+.ped.nuevo{border-left-color:var(--rojo);box-shadow:0 0 0 2px #fde8ea}
+.ped.entregado,.ped.cancelado{opacity:.6}
+.ped h3{margin:0 0 4px;display:flex;justify-content:space-between}
+.ped .meta{color:var(--suave);font-size:.9rem}
+.ped ul{padding-left:18px;margin:8px 0}
+.chip{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700;background:#eef2fb;color:var(--azul);margin:2px 4px 2px 0}
+.chip.rojo{background:#fde8ea;color:var(--rojo)}.chip.verde{background:#e3f3e8;color:var(--ok)}.chip.amarillo{background:#fff4d1;color:#7a5a00}
+.botones{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.botones button,.btn{border:0;border-radius:10px;padding:10px 12px;font-size:.95rem;font-weight:700;cursor:pointer;background:#ece6d8}
+.b-azul{background:var(--azul)!important;color:#fff}.b-verde{background:var(--ok)!important;color:#fff}.b-rojo{background:#fde8ea!important;color:var(--rojo)}
+.mostrador{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+@media (max-width:800px){.mostrador{grid-template-columns:1fr}}
+.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.prods button{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:12px 8px;font-size:.95rem;cursor:pointer;min-height:84px;text-align:center}
+.prods button b{display:block;color:var(--rojo)}
+.prods button:disabled{opacity:.4}
+.caja{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:14px}
+.linea{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid #f0e9da}
+.linea button{border:0;background:#fde8ea;color:var(--rojo);border-radius:8px;font-weight:700;cursor:pointer}
+.total{font-size:1.4rem;font-weight:800;margin:10px 0}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+th,td{padding:10px;border-bottom:1px solid #f0e9da;text-align:left}
+td input{width:90px;font-size:1rem;padding:6px}
+.login{max-width:320px;margin:80px auto;text-align:center}
+.login input{font-size:1.6rem;text-align:center;width:100%;padding:12px;border-radius:12px;border:1px solid var(--borde);letter-spacing:8px}
+.resumen-ventas{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.resumen-ventas div{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:14px}
+.resumen-ventas b{display:block;font-size:1.5rem}
+label{font-weight:600}
+select,input[type=number]{font-size:1rem;padding:8px;border-radius:8px;border:1px solid var(--borde)}
+</style>
+</head>
+<body>
+<div id="pantalla-login" class="login">
+  <h2>Arepalandia · Local</h2>
+  <p>Poné el PIN</p>
+  <input id="pin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+  <p><button class="btn b-azul" id="entrar" style="width:100%;padding:14px">Entrar</button></p>
+  <p id="login-error" style="color:var(--rojo)"></p>
+</div>
+
+<div id="app" class="oculto">
+<header>
+  <h1>AREPALANDIA · Local</h1>
+  <nav>
+    <button data-tab="pedidos" class="activo">Pedidos <span id="cuenta-nuevos"></span></button>
+    <button data-tab="mostrador">Mostrador</button>
+    <button data-tab="stock">Stock</button>
+    <button data-tab="ventas">Ventas</button>
+  </nav>
+</header>
+<main>
+  <section id="tab-pedidos"><div class="grid" id="lista-pedidos"></div></section>
+
+  <section id="tab-mostrador" class="oculto">
+    <div class="mostrador">
+      <div class="prods" id="botones-prod"></div>
+      <div class="caja">
+        <h3 style="margin-top:0">Venta de mostrador</h3>
+        <div id="lineas-mostrador"><p style="color:var(--suave)">Tocá los productos para agregarlos.</p></div>
+        <div class="total" id="total-mostrador">$0</div>
+        <label>Pago</label>
+        <div class="botones" id="pago-mostrador">
+          <button data-pago="efectivo" class="b-azul">Efectivo</button>
+          <button data-pago="transferencia">Transferencia</button>
+        </div>
+        <div id="cambio-mostrador" style="margin-top:10px">
+          <label for="recibido">Recibido $</label> <input id="recibido" type="number" inputmode="numeric" style="width:120px">
+          <div id="vuelto" style="font-weight:700;margin-top:6px"></div>
+        </div>
+        <div class="botones">
+          <button class="b-verde" id="cobrar" style="flex:1;padding:14px">Cobrar e imprimir</button>
+          <button id="limpiar-mostrador">Borrar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-stock" class="oculto">
+    <p>Poné cuántos hay de cada cosa al abrir. Dejalo vacío si no querés controlar ese producto. Con 0 aparece agotado en la página.</p>
+    <table><thead><tr><th>#</th><th>Producto</th><th>Precio $</th><th>Stock</th><th>En el menú</th></tr></thead><tbody id="tabla-stock"></tbody></table>
+  </section>
+
+  <section id="tab-ventas" class="oculto">
+    <p><label for="dia-ventas">Día</label> <input type="date" id="dia-ventas"></p>
+    <div class="resumen-ventas" id="resumen-ventas"></div>
+    <table><thead><tr><th>Producto</th><th>Cantidad</th><th>Importe</th></tr></thead><tbody id="tabla-ventas"></tbody></table>
+    <p><a class="btn b-azul" id="bajar-csv" href="#" style="display:inline-block;text-decoration:none">Bajar todas las ventas (Excel)</a></p>
+  </section>
+</main>
+</div>
+<iframe id="impresion" title="ticket" style="position:absolute;width:0;height:0;border:0"></iframe>
+
+<script>
+const $ = s => document.querySelector(s);
+const pesos = n => '$' + Number(n || 0).toLocaleString('es-UY');
+let PIN = '', pedidos = [], estados = [], productos = [], negocio = {}, vistos = new Set(), primera = true;
+let mostrador = {}, pagoMostrador = 'efectivo';
+try { PIN = localStorage.getItem('pin') || ''; } catch {}
+
+async function api(ruta, datos){
+  const op = {headers: {'X-Pin': PIN}};
+  if (datos !== undefined){ op.method = 'POST'; op.body = JSON.stringify(datos); op.headers['Content-Type'] = 'application/json'; }
+  const r = await fetch(ruta, op);
+  if (r.status === 401){ salir(); throw new Error('PIN incorrecto'); }
+  const d = await r.json(); if (!r.ok) throw new Error(d.error || 'Error'); return d;
+}
+function salir(){ PIN = ''; try { localStorage.removeItem('pin'); } catch {} $('#app').classList.add('oculto'); $('#pantalla-login').classList.remove('oculto'); }
+async function entrar(){
+  PIN = $('#pin').value || PIN;
+  try {
+    await api('/api/local/productos');
+    try { localStorage.setItem('pin', PIN); } catch {}
+    $('#pantalla-login').classList.add('oculto'); $('#app').classList.remove('oculto');
+    const m = await (await fetch('/api/menu')).json(); negocio = m.negocio;
+    $('#dia-ventas').value = hoy();
+    await cargarProductos(); await cargarPedidos(); setInterval(cargarPedidos, 10000);
+  } catch (e) { $('#login-error').textContent = 'PIN incorrecto'; }
+}
+function hoy(){ const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); }
+function hora(iso){ return iso.slice(11, 16); }
+
+// ---------- pedidos ----------
+async function cargarPedidos(){
+  const d = await api('/api/local/pedidos?dia=' + hoy());
+  estados = d.estados;
+  const nuevos = d.pedidos.filter(p => !vistos.has(p.id) && p.canal === 'web');
+  if (!primera && nuevos.length) sonar();
+  d.pedidos.forEach(p => vistos.add(p.id)); primera = false;
+  pedidos = d.pedidos; pintarPedidos();
+}
+function pintarPedidos(){
+  const web = pedidos.filter(p => p.canal === 'web');
+  const pendientes = web.filter(p => !['entregado', 'cancelado'].includes(p.estado)).length;
+  $('#cuenta-nuevos').textContent = pendientes ? `(${pendientes})` : '';
+  const cont = $('#lista-pedidos'); cont.innerHTML = '';
+  if (!web.length){ cont.innerHTML = '<p style="color:var(--suave)">Todavía no hay pedidos hoy.</p>'; return; }
+  for (const p of web){
+    const d = document.createElement('div'); d.className = 'ped ' + p.estado.replace(/\s/g, '-');
+    const pago = p.pago === 'efectivo'
+      ? `<span class="chip amarillo">Efectivo${p.paga_con ? ' · paga con ' + pesos(p.paga_con) + ' · cambio ' + pesos(p.cambio) : ''}</span>`
+      : `<span class="chip ${p.estado === 'nuevo' ? 'rojo' : 'verde'}">Transferencia${p.estado === 'nuevo' ? ' · verificar' : ''}</span>`;
+    d.innerHTML = `<h3><span>#${p.id} · ${esc(p.nombre)}</span><span>${pesos(p.total)}</span></h3>
+      <div class="meta">${hora(p.creado)} · ${p.entrega === 'delivery' ? '🛵 ' + esc(p.direccion) : '🏠 Retira'} · ${esc(p.telefono || '')}</div>
+      <div>${pago}<span class="chip">${p.estado}</span>${p.origen ? `<span class="chip">${esc(p.origen)}</span>` : ''}</div>
+      <ul>${p.items.map(i => `<li>${i.cantidad} × ${esc(i.nombre)}${i.opcion ? ' (' + esc(i.opcion) + ')' : ''}</li>`).join('')}</ul>
+      ${p.nota ? `<div class="meta">📝 ${esc(p.nota)}</div>` : ''}
+      <div class="botones"></div>`;
+    const b = d.querySelector('.botones');
+    const sig = {'nuevo': p.pago === 'transferencia' ? 'pago verificado' : 'en preparación', 'pago verificado': 'en preparación',
+                 'en preparación': p.entrega === 'delivery' ? 'enviado' : 'entregado', 'enviado': 'entregado'}[p.estado];
+    if (sig) boton(b, 'Marcar: ' + sig, 'b-azul', () => cambiarEstado(p.id, sig));
+    if (p.comprobante) boton(b, 'Ver comprobante', '', () => verComprobante(p.id));
+    boton(b, 'Imprimir', '', () => imprimir(p));
+    if (p.telefono) boton(b, 'WhatsApp', '', () => window.open(`https://wa.me/${p.telefono.replace(/\D/g, '').replace(/^0/, '598')}`));
+    if (!['entregado', 'cancelado'].includes(p.estado)) boton(b, 'Cancelar', 'b-rojo', () => { if (confirm('¿Cancelar el pedido #' + p.id + '? Se devuelve el stock.')) cambiarEstado(p.id, 'cancelado'); });
+    cont.appendChild(d);
+  }
+}
+function boton(cont, txt, cls, fn){ const b = document.createElement('button'); b.textContent = txt; if (cls) b.className = cls; b.onclick = fn; cont.appendChild(b); }
+function esc(t){ const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; }
+async function cambiarEstado(id, estado){
+  try { await api('/api/local/estado', {id, estado}); if (estado === 'cancelado') await cargarProductos(); await cargarPedidos(); }
+  catch (e) { alert(e.message); }
+}
+async function verComprobante(id){
+  const r = await fetch('/api/local/comprobante/' + id, {headers: {'X-Pin': PIN}});
+  if (!r.ok) return alert('No se encontró el comprobante');
+  window.open(URL.createObjectURL(await r.blob()));
+}
+function sonar(){
+  try { const c = new AudioContext(), o = c.createOscillator(); o.frequency.value = 880; o.connect(c.destination); o.start(); o.stop(c.currentTime + .4); } catch {}
+  document.title = '🔔 Pedido nuevo · Arepalandia'; setTimeout(() => document.title = 'Arepalandia · Local', 8000);
+}
+
+// ---------- ticket 80 mm ----------
+function imprimir(p){
+  const lineas = p.items.map(i => `<tr><td>${i.cantidad}× ${esc(i.nombre)}${i.opcion ? '<br><small>' + esc(i.opcion) + '</small>' : ''}</td><td style="text-align:right">${pesos(i.importe)}</td></tr>`).join('');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><style>
+    @page{size:80mm auto;margin:3mm}body{font-family:monospace;font-size:13px;width:72mm;margin:0}
+    h1{font-size:18px;text-align:center;margin:0}p{margin:2px 0}table{width:100%;border-collapse:collapse}td{padding:2px 0;vertical-align:top}
+    .t{font-size:17px;font-weight:bold;border-top:1px dashed #000;margin-top:4px;padding-top:4px}.c{text-align:center}</style></head><body>
+    <h1>AREPALANDIA</h1><p class="c">Sabor venezolano · 091 507 257</p><p class="c">Comprobante no fiscal</p><hr>
+    <p><b>Pedido #${p.id}</b> · ${p.creado.slice(0, 10)} ${hora(p.creado)}</p>
+    <p>${esc(p.nombre)}${p.telefono ? ' · ' + esc(p.telefono) : ''}</p>
+    ${p.entrega === 'delivery' ? `<p><b>Delivery:</b> ${esc(p.direccion)}</p>` : `<p><b>${p.entrega === 'retiro' ? 'Retira en el local' : 'Mostrador'}</b></p>`}
+    ${p.nota ? `<p>Nota: ${esc(p.nota)}</p>` : ''}<hr><table>${lineas}
+    ${p.envio ? `<tr><td>Envío</td><td style="text-align:right">${pesos(p.envio)}</td></tr>` : ''}</table>
+    <p class="t">TOTAL ${pesos(p.total)}</p>
+    <p>Pago: ${p.pago}${p.paga_con ? ` · paga con ${pesos(p.paga_con)} · cambio ${pesos(p.cambio)}` : ''}</p>
+    <p class="c" style="margin-top:8px">¡Gracias, pana!</p></body></html>`;
+  const f = $('#impresion'); f.srcdoc = html;
+  f.onload = () => { f.contentWindow.focus(); f.contentWindow.print(); };
+}
+
+// ---------- mostrador ----------
+async function cargarProductos(){ productos = (await api('/api/local/productos')).productos; pintarBotones(); pintarStock(); }
+function pintarBotones(){
+  const c = $('#botones-prod'); c.innerHTML = '';
+  for (const p of productos.filter(p => p.activo)){
+    const b = document.createElement('button');
+    b.innerHTML = `${p.numero}. ${esc(p.nombre)}<b>${pesos(p.precio)}</b>${p.stock !== null ? `<small>quedan ${p.stock}</small>` : ''}`;
+    b.disabled = p.stock === 0;
+    b.onclick = () => {
+      let op = '';
+      if (p.opciones.length){
+        op = prompt('Relleno: ' + p.opciones.map((o, i) => `${i + 1}=${o}`).join(', '));
+        if (op === null) return; op = p.opciones[Number(op) - 1] || p.opciones.find(o => o.toLowerCase() === op.trim().toLowerCase());
+        if (!op) return alert('Relleno no válido');
+      }
+      const k = p.numero + '|' + op; mostrador[k] = (mostrador[k] || 0) + 1; pintarMostrador();
+    };
+    c.appendChild(b);
+  }
+}
+function totalMostrador(){ return Object.entries(mostrador).reduce((a, [k, c]) => a + productos.find(p => p.numero == k.split('|')[0]).precio * c, 0); }
+function pintarMostrador(){
+  const c = $('#lineas-mostrador'); c.innerHTML = '';
+  for (const [k, n] of Object.entries(mostrador)){
+    const [num, op] = k.split('|'); const p = productos.find(x => x.numero == num);
+    const d = document.createElement('div'); d.className = 'linea';
+    d.innerHTML = `<span>${n} × ${esc(p.nombre)}${op ? ' (' + esc(op) + ')' : ''}</span><span>${pesos(p.precio * n)} </span>`;
+    const q = document.createElement('button'); q.textContent = '−'; q.onclick = () => { mostrador[k]--; if (!mostrador[k]) delete mostrador[k]; pintarMostrador(); };
+    d.lastChild.appendChild(q); c.appendChild(d);
+  }
+  if (!Object.keys(mostrador).length) c.innerHTML = '<p style="color:var(--suave)">Tocá los productos para agregarlos.</p>';
+  $('#total-mostrador').textContent = pesos(totalMostrador()); calcularVuelto();
+}
+function calcularVuelto(){
+  const r = Number($('#recibido').value), t = totalMostrador();
+  $('#vuelto').textContent = r ? (r >= t ? 'Vuelto: ' + pesos(r - t) : 'Falta ' + pesos(t - r)) : '';
+}
+$('#recibido').oninput = calcularVuelto;
+document.querySelectorAll('#pago-mostrador button').forEach(b => b.onclick = () => {
+  pagoMostrador = b.dataset.pago;
+  document.querySelectorAll('#pago-mostrador button').forEach(x => x.classList.toggle('b-azul', x === b));
+  $('#cambio-mostrador').classList.toggle('oculto', pagoMostrador !== 'efectivo');
+});
+$('#limpiar-mostrador').onclick = () => { mostrador = {}; $('#recibido').value = ''; pintarMostrador(); };
+$('#cobrar').onclick = async () => {
+  if (!Object.keys(mostrador).length) return;
+  const items = Object.entries(mostrador).map(([k, c]) => ({numero: Number(k.split('|')[0]), opcion: k.split('|')[1], cantidad: c}));
+  try {
+    const d = await api('/api/local/mostrador', {items, pago: pagoMostrador, nombre: 'Mostrador'});
+    const r = Number($('#recibido').value);
+    if (pagoMostrador === 'efectivo' && r >= d.pedido.total){ d.pedido.paga_con = r; d.pedido.cambio = r - d.pedido.total; }
+    imprimir(d.pedido); mostrador = {}; $('#recibido').value = ''; pintarMostrador(); await cargarProductos(); await cargarPedidos();
+  } catch (e) { alert(e.message); }
+};
+
+// ---------- stock ----------
+function pintarStock(){
+  const t = $('#tabla-stock'); t.innerHTML = '';
+  for (const p of productos){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${p.numero}</td><td>${esc(p.nombre)}</td><td><input type="number" min="0" value="${p.precio}" data-campo="precio"></td>
+      <td><input type="number" min="0" value="${p.stock ?? ''}" placeholder="sin control" data-campo="stock"></td>
+      <td><input type="checkbox" ${p.activo ? 'checked' : ''} data-campo="activo" style="width:24px;height:24px"></td>`;
+    tr.querySelectorAll('input').forEach(i => i.onchange = async () => {
+      const v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : Number(i.value));
+      if (i.dataset.campo === 'precio' && v === null) return;
+      try { productos = (await api('/api/local/producto', {numero: p.numero, [i.dataset.campo]: v})).productos; pintarBotones(); i.style.background = '#e3f3e8'; }
+      catch (e) { alert(e.message); }
+    });
+    t.appendChild(tr);
+  }
+}
+
+// ---------- ventas ----------
+async function cargarVentas(){
+  const d = await api('/api/local/pedidos?dia=' + $('#dia-ventas').value);
+  const val = d.pedidos.filter(p => p.estado !== 'cancelado');
+  const suma = f => val.filter(f).reduce((a, p) => a + p.total, 0);
+  $('#resumen-ventas').innerHTML = `
+    <div>Total del día<b>${pesos(suma(() => true))}</b>${val.length} ventas</div>
+    <div>Efectivo<b>${pesos(suma(p => p.pago === 'efectivo'))}</b></div>
+    <div>Transferencia<b>${pesos(suma(p => p.pago === 'transferencia'))}</b></div>
+    <div>Pedidos web<b>${pesos(suma(p => p.canal === 'web'))}</b>Mostrador ${pesos(suma(p => p.canal === 'mostrador'))}</div>`;
+  const porProd = {};
+  val.forEach(p => p.items.forEach(i => { const x = porProd[i.nombre] ||= {c: 0, t: 0}; x.c += i.cantidad; x.t += i.importe; }));
+  $('#tabla-ventas').innerHTML = Object.entries(porProd).sort((a, b) => b[1].t - a[1].t).map(([n, x]) => `<tr><td>${esc(n)}</td><td>${x.c}</td><td>${pesos(x.t)}</td></tr>`).join('') || '<tr><td colspan="3">Sin ventas ese día.</td></tr>';
+}
+$('#dia-ventas').onchange = cargarVentas;
+$('#bajar-csv').onclick = async e => {
+  e.preventDefault();
+  const r = await fetch('/api/local/ventas.csv', {headers: {'X-Pin': PIN}});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(await r.blob()); a.download = 'ventas-arepalandia.csv'; a.click();
+};
+
+// ---------- navegación ----------
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('activo', x === b));
+  ['pedidos', 'mostrador', 'stock', 'ventas'].forEach(t => $('#tab-' + t).classList.toggle('oculto', t !== b.dataset.tab));
+  if (b.dataset.tab === 'ventas') cargarVentas();
+});
+$('#entrar').onclick = entrar;
+$('#pin').onkeydown = e => { if (e.key === 'Enter') entrar(); };
+if (PIN) entrar();
+</script>
+</body>
+</html>

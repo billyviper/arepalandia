@@ -1,0 +1,181 @@
+[
+ {
+  "numero": 1,
+  "nombre": "Arepa rellena",
+  "detalle": "Todas con queso.",
+  "categoria": "Arepas",
+  "precio": 170,
+  "opciones": [
+   "Carne",
+   "Pollo",
+   "Cerdo",
+   "Jamón"
+  ],
+  "stock": null
+ },
+ {
+  "numero": 2,
+  "nombre": "Reina Pepiada",
+  "detalle": "Pollo desmenuzado con crema de palta.",
+  "categoria": "Arepas",
+  "precio": 190,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 3,
+  "nombre": "Arepa Perico",
+  "detalle": "Revoltillo de huevos con tomate y cebolla.",
+  "categoria": "Arepas",
+  "precio": 180,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 4,
+  "nombre": "Arepa de ensalada de pollo",
+  "detalle": "Con ajonjolí y huevos hervidos.",
+  "categoria": "Arepas",
+  "precio": 190,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 5,
+  "nombre": "Arepa de chorizo con salsa kako",
+  "detalle": "Chorizo con salsa de queso llanero.",
+  "categoria": "Arepas",
+  "precio": 190,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 6,
+  "nombre": "Salchipapas",
+  "detalle": "Papas, chorizo, panceta y jamón, con cheddar, salsas y huevo.",
+  "categoria": "Salchipapas",
+  "precio": 450,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 7,
+  "nombre": "Tequeños con queso llanero",
+  "detalle": "Ración de 5.",
+  "categoria": "Tequeños",
+  "precio": 140,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 8,
+  "nombre": "Tequeños de jamón o panceta",
+  "detalle": "Ración de 5, con queso llanero.",
+  "categoria": "Tequeños",
+  "precio": 160,
+  "opciones": [
+   "Jamón",
+   "Panceta"
+  ],
+  "stock": null
+ },
+ {
+  "numero": 9,
+  "nombre": "Tequeños de dulce de leche",
+  "detalle": "Ración de 5.",
+  "categoria": "Tequeños",
+  "precio": 160,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 10,
+  "nombre": "Tequeños de dulce de leche y queso llanero",
+  "detalle": "Ración de 5.",
+  "categoria": "Tequeños",
+  "precio": 160,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 11,
+  "nombre": "Tequeños de muzzarella y orégano",
+  "detalle": "Ración de 5.",
+  "categoria": "Tequeños",
+  "precio": 160,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 12,
+  "nombre": "Tequeños de salame y queso llanero",
+  "detalle": "Ración de 5.",
+  "categoria": "Tequeños",
+  "precio": 160,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 13,
+  "nombre": "Pastelitos salados",
+  "detalle": "Pollo, carne o jamón con queso.",
+  "categoria": "Para picar",
+  "precio": 100,
+  "opciones": [
+   "Pollo",
+   "Carne",
+   "Jamón"
+  ],
+  "stock": null
+ },
+ {
+  "numero": 14,
+  "nombre": "Empanadas venezolanas",
+  "detalle": "Pollo, carne, cerdo o jamón con queso.",
+  "categoria": "Para picar",
+  "precio": 100,
+  "opciones": [
+   "Carne",
+   "Pollo",
+   "Cerdo",
+   "Jamón"
+  ],
+  "stock": null
+ },
+ {
+  "numero": 15,
+  "nombre": "Guasacaca",
+  "detalle": "Salsa de ajo y perejil.",
+  "categoria": "Para picar",
+  "precio": 120,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 16,
+  "nombre": "Papas fritas",
+  "detalle": "Porción de 250 g.",
+  "categoria": "Para picar",
+  "precio": 80,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 17,
+  "nombre": "Refresco Limol",
+  "detalle": "600 ml",
+  "categoria": "Bebidas",
+  "precio": 50,
+  "opciones": [],
+  "stock": null
+ },
+ {
+  "numero": 18,
+  "nombre": "Cerveza artesanal Chaná",
+  "detalle": "750 ml",
+  "categoria": "Bebidas",
+  "precio": 150,
+  "opciones": [],
+  "stock": null
+ }
+]

@@ -1,0 +1,16 @@
+{
+  "nombre": "Arepalandia",
+  "whatsapp": "59891507257",
+  "envio_costo": 50,
+  "envio_gratis_desde": 300,
+  "banco": {
+    "banco": "NOMBRE DEL BANCO",
+    "tipo": "Caja de ahorro en pesos",
+    "numero": "NUMERO DE CUENTA",
+    "numero_otros_bancos": "NUMERO PARA OTROS BANCOS",
+    "titular": "TITULAR"
+  },
+  "horario": "Martes a viernes 10 a 13 y 20 a 23. Sábado y domingo 20 a 23. Lunes cerrado.",
+  "pin_local": "CAMBIAR",
+  "puerto": 8080
+}
