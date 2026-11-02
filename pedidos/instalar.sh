@@ -30,7 +30,7 @@ fi
 instalar_base() {
   paso "Instalando programas necesarios"
   sudo apt-get update -qq
-  sudo apt-get install -y -qq git python3 curl ca-certificates tzdata >/dev/null
+  sudo apt-get install -y -qq git python3 curl ca-certificates tzdata cron >/dev/null
   sudo timedatectl set-timezone America/Montevideo || true
   ok "Listo"
 
