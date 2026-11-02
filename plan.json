@@ -1,102 +1,113 @@
 {
-  "semana": "3 al 8 de noviembre de 2026",
-  "whatsapp": "59891507257",
-  "promo": "Jueves de empanadas: 3 por $250",
-  "publicaciones": [
-    {
-      "id": "2026-11-03-a",
-      "fecha": "2026-11-03",
-      "hora": "09:45",
-      "donde": "Estado de WhatsApp",
-      "titulo": "Arepa rellena para el mediodía",
-      "foto": "Foto de una arepa rellena de carne mechada, de cerca, abierta para que se vea el relleno. Con luz de ventana, sin flash.",
-      "texto": "¡Epa, Mercedes! 🫓 Ya estamos abiertos. Arepa rellena con carne, pollo, cerdo o jamón, siempre con queso, a $170.\n\nPide por número por WhatsApp: «1 del 1» y listo. Te la llevamos o la buscas.\n📲 091 507 257 · Hoy de 10 a 13 y de 20 a 23."
-    },
-    {
-      "id": "2026-11-03-b",
-      "fecha": "2026-11-03",
-      "hora": "19:30",
-      "donde": "Instagram",
-      "titulo": "Salchipapas, la más llamativa",
-      "foto": "Foto de una salchipapa desde arriba, recién servida, con el queso derretido y el huevo encima. Que se vea la caja llena.",
-      "texto": "Esta noche hay salchipapas como en Venezuela 🔥 Papas, chorizo, panceta y jamón, con cheddar, guasacaca, mayonesa, mostaza, ketchup y huevo. $450, alcanza para compartir.\n\nPídela por WhatsApp al 091 507 257 diciendo «1 del 6». Abrimos de 20 a 23.\n\n#Mercedes #ComidaVenezolana #Delivery #Arepalandia"
-    },
-    {
-      "id": "2026-11-04-a",
-      "fecha": "2026-11-04",
-      "hora": "19:30",
-      "donde": "Estado de WhatsApp",
-      "titulo": "Combo pana",
-      "foto": "Foto de dos arepas rellenas y un Limol juntos sobre el mostrador.",
-      "texto": "Combo pana 🫓🫓🥤 2 arepas rellenas + Limol a $350 (suelto sale $390).\n\nPide «combo pana» por WhatsApp al 091 507 257. Hoy de 20 a 23, te lo llevamos a toda Mercedes."
-    },
-    {
-      "id": "2026-11-05-a",
-      "fecha": "2026-11-05",
-      "hora": "09:45",
-      "donde": "Estado de WhatsApp y lista de difusión",
-      "titulo": "Jueves de empanadas",
-      "foto": "Foto de 3 empanadas venezolanas doraditas, una abierta para que se vea el relleno.",
-      "texto": "¡Hoy es jueves de empanadas! 🥟 3 empanadas venezolanas por $250. Pollo, carne, cerdo o jamón con queso.\n\nVale todo el día, mediodía y noche. Escribe «JUEVES» al 091 507 257 y te las llevamos."
-    },
-    {
-      "id": "2026-11-05-b",
-      "fecha": "2026-11-05",
-      "hora": "19:15",
-      "donde": "Instagram",
-      "titulo": "Video de empanadas",
-      "foto": "Video de 10 segundos: sacando las empanadas del aceite y abriendo una. De cerca.",
-      "texto": "Jueves de empanadas en Arepalandia 🥟 3 por $250, hoy hasta las 23.\n\nEscríbenos «JUEVES» al 091 507 257 y te las llevamos calentitas a toda Mercedes.\n\n#Mercedes #Empanadas #ComidaVenezolana #Arepalandia"
-    },
-    {
-      "id": "2026-11-06-a",
-      "fecha": "2026-11-06",
-      "hora": "19:00",
-      "donde": "Instagram",
-      "titulo": "Reina Pepiada (video)",
-      "foto": "Video de 10 segundos abriendo una Reina Pepiada con la mano, de cerca, que se vea la crema de palta.",
-      "texto": "Viernes de Reina Pepiada 💚 Pollo desmenuzado con crema de palta, la arepa más querida de Venezuela. $190.\n\nPide «1 del 2» por WhatsApp al 091 507 257. Abrimos de 20 a 23, ¡chévere para arrancar el finde!\n\n#Mercedes #ReinaPepiada #Arepas #Arepalandia"
-    },
-    {
-      "id": "2026-11-06-b",
-      "fecha": "2026-11-06",
-      "hora": "19:30",
-      "donde": "Estado de WhatsApp",
-      "titulo": "Viernes de arepas",
-      "foto": "Usa el mismo video de la Reina Pepiada.",
-      "texto": "Viernes de arepas 🫓 Reina Pepiada $190, arepa rellena $170, tequeños $140.\n\nPide por número al 091 507 257: por ejemplo «2 del 1 y 1 del 7». Te lo llevamos."
-    },
-    {
-      "id": "2026-11-07-a",
-      "fecha": "2026-11-07",
-      "hora": "19:30",
-      "donde": "Estado de WhatsApp",
-      "titulo": "Detrás del mostrador",
-      "foto": "Video corto de tus manos armando una arepa en la plancha. No hace falta que se vea tu cara.",
-      "texto": "Así las hacemos, una por una y en el momento 🙌 Harina, plancha y relleno casero.\n\nSábado de 20 a 23. Pide al 091 507 257 y te llega calentita."
-    },
-    {
-      "id": "2026-11-08-a",
-      "fecha": "2026-11-08",
-      "hora": "19:00",
-      "donde": "Instagram",
-      "titulo": "Tequeños con queso llanero",
-      "foto": "Video de 5 segundos partiendo un tequeño a la mitad, que se estire el queso.",
-      "texto": "Domingo de tequeños 🧀 Ración de 5 con auténtico queso llanero, a $140. También de jamón, panceta o dulce de leche.\n\nPide «1 del 7» al 091 507 257. Hoy de 20 a 23.\n\n#Mercedes #Tequeños #ComidaVenezolana #Arepalandia"
-    },
-    {
-      "id": "2026-11-08-b",
-      "fecha": "2026-11-08",
-      "hora": "19:30",
-      "donde": "Estado de WhatsApp",
-      "titulo": "Domingo de tequeños",
-      "foto": "Usa el mismo video de los tequeños.",
-      "texto": "Domingo de tequeños 🧀 5 tequeños de queso llanero a $140.\n\nEscríbenos al 091 507 257 y te los llevamos. Hoy de 20 a 23."
-    }
-  ],
-  "respuestas": [
-    {"titulo": "Horario", "texto": "Abrimos de martes a viernes de 10 a 13 y de 20 a 23. Sábado y domingo de 20 a 23. Lunes cerrado."},
-    {"titulo": "Cómo pedir", "texto": "Pide por número del menú, por ejemplo «2 del 1 y 1 del 7». Dime si es para llevar o delivery y tu dirección."},
-    {"titulo": "Delivery", "texto": "Llevamos a toda Mercedes. ¿Me pasas tu dirección?"}
-  ]
+ "semana": "3 al 8 de noviembre de 2026",
+ "whatsapp": "59891507257",
+ "promo": "Jueves de empanadas: 3 por $250",
+ "publicaciones": [
+  {
+   "id": "2026-11-03-a",
+   "fecha": "2026-11-03",
+   "hora": "09:45",
+   "donde": "Estado de WhatsApp",
+   "titulo": "Arepa rellena para el mediodía",
+   "foto": "La pieza ya está hecha con la foto de la arepa de carne mechada (la ves abajo). Toca Compartir y elige WhatsApp › Mi estado.",
+   "texto": "¡Epa, Mercedes! 🫓 Arepa rellena de carne mechada, pollo, cerdo o jamón, siempre con queso, a $170.\n\nPide por WhatsApp: «1 del 1» y el relleno, y listo. Te la llevamos o la buscas.\n📲 091 507 257 · Hoy de 10 a 13 y de 20 a 23.",
+   "imagen": "piezas/2026-11-03-a.jpg"
+  },
+  {
+   "id": "2026-11-03-b",
+   "fecha": "2026-11-03",
+   "hora": "19:30",
+   "donde": "Instagram",
+   "titulo": "Salchipapas, la más llamativa",
+   "foto": "La pieza ya está hecha con la foto de la salchipapa (la ves abajo). Toca Compartir y elige Instagram › Feed.",
+   "texto": "Esta noche hay salchipapas como en Venezuela 🔥 Papas, salchicha, chorizo, panceta y jamón, con choclo, cheddar, salsas y huevo arriba. $450 y alcanza para compartir.\n\nPídela por WhatsApp al 091 507 257 diciendo «1 del 6». Abrimos de 20 a 23 y te la llevamos.\n\n#Mercedes #Soriano #ComidaVenezolana #Salchipapas #Delivery #Arepalandia",
+   "imagen": "piezas/2026-11-03-b.jpg"
+  },
+  {
+   "id": "2026-11-04-a",
+   "fecha": "2026-11-04",
+   "hora": "19:30",
+   "donde": "Estado de WhatsApp",
+   "titulo": "Combo pana",
+   "foto": "Foto de dos arepas rellenas y un Limol juntos sobre el mostrador.",
+   "texto": "Combo pana 🫓🫓🥤 2 arepas rellenas + Limol a $350 (suelto sale $390).\n\nPide «combo pana» por WhatsApp al 091 507 257. Hoy de 20 a 23, te lo llevamos a toda Mercedes."
+  },
+  {
+   "id": "2026-11-05-a",
+   "fecha": "2026-11-05",
+   "hora": "09:45",
+   "donde": "Estado de WhatsApp y lista de difusión",
+   "titulo": "Jueves de empanadas",
+   "foto": "Foto de 3 empanadas venezolanas doraditas, una abierta para que se vea el relleno.",
+   "texto": "¡Hoy es jueves de empanadas! 🥟 3 empanadas venezolanas por $250. Pollo, carne, cerdo o jamón con queso.\n\nVale todo el día, mediodía y noche. Escribe «JUEVES» al 091 507 257 y te las llevamos."
+  },
+  {
+   "id": "2026-11-05-b",
+   "fecha": "2026-11-05",
+   "hora": "19:15",
+   "donde": "Instagram",
+   "titulo": "Video de empanadas",
+   "foto": "Video de 10 segundos: sacando las empanadas del aceite y abriendo una. De cerca.",
+   "texto": "Jueves de empanadas en Arepalandia 🥟 3 por $250, hoy hasta las 23.\n\nEscríbenos «JUEVES» al 091 507 257 y te las llevamos calentitas a toda Mercedes.\n\n#Mercedes #Empanadas #ComidaVenezolana #Arepalandia"
+  },
+  {
+   "id": "2026-11-06-a",
+   "fecha": "2026-11-06",
+   "hora": "19:00",
+   "donde": "Instagram",
+   "titulo": "Reina Pepiada (video)",
+   "foto": "Video de 10 segundos abriendo una Reina Pepiada con la mano, de cerca, que se vea la crema de palta.",
+   "texto": "Viernes de Reina Pepiada 💚 Pollo desmenuzado con crema de palta, la arepa más querida de Venezuela. $190.\n\nPide «1 del 2» por WhatsApp al 091 507 257. Abrimos de 20 a 23, ¡chévere para arrancar el finde!\n\n#Mercedes #ReinaPepiada #Arepas #Arepalandia"
+  },
+  {
+   "id": "2026-11-06-b",
+   "fecha": "2026-11-06",
+   "hora": "19:30",
+   "donde": "Estado de WhatsApp",
+   "titulo": "Viernes de arepas",
+   "foto": "Usa el mismo video de la Reina Pepiada.",
+   "texto": "Viernes de arepas 🫓 Reina Pepiada $190, arepa rellena $170, tequeños $140.\n\nPide por número al 091 507 257: por ejemplo «2 del 1 y 1 del 7». Te lo llevamos."
+  },
+  {
+   "id": "2026-11-07-a",
+   "fecha": "2026-11-07",
+   "hora": "19:30",
+   "donde": "Estado de WhatsApp",
+   "titulo": "Detrás del mostrador",
+   "foto": "Video corto de tus manos armando una arepa en la plancha. No hace falta que se vea tu cara.",
+   "texto": "Así las hacemos, una por una y en el momento 🙌 Harina, plancha y relleno casero.\n\nSábado de 20 a 23. Pide al 091 507 257 y te llega calentita."
+  },
+  {
+   "id": "2026-11-08-a",
+   "fecha": "2026-11-08",
+   "hora": "19:00",
+   "donde": "Instagram",
+   "titulo": "Tequeños con queso llanero",
+   "foto": "Video de 5 segundos partiendo un tequeño a la mitad, que se estire el queso.",
+   "texto": "Domingo de tequeños 🧀 Ración de 5 con auténtico queso llanero, a $140. También de jamón, panceta o dulce de leche.\n\nPide «1 del 7» al 091 507 257. Hoy de 20 a 23.\n\n#Mercedes #Tequeños #ComidaVenezolana #Arepalandia"
+  },
+  {
+   "id": "2026-11-08-b",
+   "fecha": "2026-11-08",
+   "hora": "19:30",
+   "donde": "Estado de WhatsApp",
+   "titulo": "Domingo de tequeños",
+   "foto": "Usa el mismo video de los tequeños.",
+   "texto": "Domingo de tequeños 🧀 5 tequeños de queso llanero a $140.\n\nEscríbenos al 091 507 257 y te los llevamos. Hoy de 20 a 23."
+  }
+ ],
+ "respuestas": [
+  {
+   "titulo": "Horario",
+   "texto": "Abrimos de martes a viernes de 10 a 13 y de 20 a 23. Sábado y domingo de 20 a 23. Lunes cerrado."
+  },
+  {
+   "titulo": "Cómo pedir",
+   "texto": "Pide por número del menú, por ejemplo «2 del 1 y 1 del 7». Dime si es para llevar o delivery y tu dirección."
+  },
+  {
+   "titulo": "Delivery",
+   "texto": "Llevamos a toda Mercedes. ¿Me pasas tu dirección?"
+  }
+ ]
 }

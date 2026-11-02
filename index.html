@@ -114,8 +114,11 @@ async function copiar(t){
 
 async function compartir(p){
   const t = textoDe(p);
-  const f = fotos[p.id];
+  let f = fotos[p.id];
   await copiar(t);
+  if (!f && p.imagen) {
+    try { const b = await (await fetch(p.imagen)).blob(); f = new File([b], p.imagen.split('/').pop(), {type: b.type || 'image/jpeg'}); } catch {}
+  }
   if (f && navigator.canShare && navigator.canShare({files:[f]})) {
     try { await navigator.share({files:[f], text:t}); return; } catch(e){ if (e.name==='AbortError') return; }
   }
@@ -136,6 +139,7 @@ function tarjeta(p, atrasada){
     <label class="btn b-amarillo">📷 Sacar foto o video<input type="file" accept="image/*,video/*" capture="environment"></label>
     <label class="btn b-gris">🖼️ Elegir de la galería<input type="file" accept="image/*,video/*"></label>
     <img class="foto-prev" alt="Foto elegida">
+    <a class="btn b-gris bajar" download style="display:none;text-decoration:none">⬇️ Guardar la pieza en el celular</a>
     <div class="paso"><div class="num">2</div><p>Este es el texto. Puedes cambiarlo si quieres.</p></div>
     <textarea class="texto"></textarea>
     <div class="paso"><div class="num">3</div><p>Toca compartir y elige ${p.donde.includes('Instagram')?'Instagram':'WhatsApp'}. El texto ya queda copiado: si no aparece, mantén apretado y pega.</p></div>
@@ -143,6 +147,10 @@ function tarjeta(p, atrasada){
     <div class="fila"><button class="b-gris copiar">Copiar texto</button><button class="b-verde listo">${hecha(p.id)?'Publicado ✔':'Ya lo publiqué'}</button></div>`;
   el.querySelector('h3').textContent = p.titulo;
   el.querySelector('.foto-txt').textContent = p.foto;
+  if (p.imagen && !fotos[p.id]) {
+    const img = el.querySelector('.foto-prev'); img.src = p.imagen; img.style.display = 'block'; img.style.maxHeight = 'none'; img.style.objectFit = 'contain';
+    const a = el.querySelector('.bajar'); a.href = p.imagen; a.setAttribute('download', p.imagen.split('/').pop()); a.style.display = 'block';
+  }
   const ta = el.querySelector('.texto'); ta.value = textoDe(p);
   ta.addEventListener('input', () => guardar('texto-'+p.id, ta.value));
   el.querySelectorAll('input[type=file]').forEach(inp => inp.addEventListener('change', () => {
