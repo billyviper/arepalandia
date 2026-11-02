@@ -52,12 +52,14 @@ input[type=text],input[type=tel],input[type=number],select,textarea{width:100%;f
 .listo .grande-num{font-size:2.6rem;font-weight:800;color:var(--azul)}
 .oculto{display:none!important}
 .nota{color:var(--suave);font-size:.85rem}
+.cerrado{background:#fff4d6;border:2px solid #f2c94c;border-radius:12px;padding:12px;font-weight:700;text-align:center}
 </style>
 </head>
 <body>
 <header><h1>AREPALANDIA</h1><p>SABOR VENEZOLANO</p></header>
 <main>
   <section id="paso-menu">
+    <p class="cerrado oculto" id="cerrado"></p>
     <p class="nota" id="horario"></p>
     <div id="menu">Cargando el menú…</div>
   </section>
@@ -155,6 +157,7 @@ async function cargar(){
     negocio = d.negocio; productos = d.productos;
   } catch { $('#menu').textContent = 'No se pudo cargar el menú. Probá de nuevo en un rato.'; return; }
   $('#horario').textContent = negocio.horario;
+  if (negocio.abierto === false){ const c = $('#cerrado'); c.textContent = negocio.atencion + ' Puedes mirar el menú igual.'; c.classList.remove('oculto'); }
   $('#nota-envio').textContent = `Envío ${pesos(negocio.envio_costo)}. Gratis en pedidos desde ${pesos(negocio.envio_gratis_desde)}.`;
   const b = negocio.banco;
   $('#datos-banco').innerHTML = `<b>${b.banco}</b><br>${b.tipo}<br>Cuenta: <b>${b.numero}</b><br>Desde otros bancos: <b>${b.numero_otros_bancos}</b><br>Titular: ${b.titular}`;
@@ -207,8 +210,8 @@ function aviso(t){ alert(t); }
 function actualizar(){
   const bp = $('#boton-principal'), n = Object.values(carrito).reduce((a, b) => a + b, 0);
   if (paso === 'menu'){
-    bp.disabled = n === 0;
-    bp.textContent = n ? `Ver mi pedido (${n}) · ${pesos(subtotal())}` : 'Elegí lo que quieras';
+    bp.disabled = n === 0 || negocio.abierto === false;
+    bp.textContent = negocio.abierto === false ? 'Cerrado por ahora' : n ? `Ver mi pedido (${n}) · ${pesos(subtotal())}` : 'Elegí lo que quieras';
   } else if (paso === 'datos'){
     bp.disabled = enviando;
     bp.textContent = enviando ? 'Enviando…' : `Confirmar pedido · ${pesos(total())}`;

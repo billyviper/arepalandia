@@ -35,6 +35,44 @@ if not os.path.exists(os.path.join(BASE, "config.json")):
 with open(os.path.join(BASE, "config.json"), encoding="utf-8") as f:
     CONFIG = json.load(f)
 
+# Turnos de atención: 0 = lunes … 6 = domingo. Fuera de estos turnos la página no acepta pedidos.
+TURNOS_DEFECTO = {"0": [], "1": [["10:00", "13:00"], ["20:00", "23:00"]], "2": [["10:00", "13:00"], ["20:00", "23:00"]],
+                  "3": [["10:00", "13:00"], ["20:00", "23:00"]], "4": [["10:00", "13:00"], ["20:00", "23:00"]],
+                  "5": [["20:00", "23:00"]], "6": [["20:00", "23:00"]]}
+DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+try:
+    from zoneinfo import ZoneInfo
+    ZONA = ZoneInfo(CONFIG.get("zona_horaria", "America/Montevideo"))
+except Exception:  # sin base de zonas: hora de la máquina
+    ZONA = None
+
+
+def ahora_local():
+    return datetime.now(ZONA) if ZONA else datetime.now()
+
+
+def estado_atencion(momento=None):
+    """Devuelve (abierto, texto) según los turnos de config.json."""
+    turnos = CONFIG.get("turnos") or TURNOS_DEFECTO
+    t = momento or ahora_local()
+    hhmm = t.strftime("%H:%M")
+    for ini, fin in turnos.get(str(t.weekday()), []):
+        if ini <= hhmm < fin:
+            return True, f"Abierto hasta las {fin}"
+    for extra in range(0, 8):  # próxima apertura
+        dia = (t.weekday() + extra) % 7
+        for ini, fin in turnos.get(str(dia), []):
+            if extra == 0 and ini <= hhmm:
+                continue
+            cuando = "hoy" if extra == 0 else ("mañana" if extra == 1 else "el " + DIAS[dia])
+            return False, f"Ahora estamos cerrados. Abrimos {cuando} a las {ini}."
+    return False, "Ahora estamos cerrados."
+
+
+# Intentos de PIN fallidos por dirección: después de 5 en 15 minutos se bloquea 15 minutos.
+INTENTOS = {}
+MAX_INTENTOS, VENTANA_INTENTOS = 5, 15 * 60
+
 DB_PATH = os.path.join(DATOS, "arepalandia.db")
 LOCK = threading.Lock()
 MAX_COMPROBANTE = 8 * 1024 * 1024
@@ -119,7 +157,7 @@ def iniciar_db():
 
 
 def ahora():
-    return datetime.now().isoformat(timespec="seconds")
+    return ahora_local().replace(tzinfo=None).isoformat(timespec="seconds")
 
 
 def menu(con, todo=False):
@@ -142,6 +180,10 @@ class ErrorPedido(Exception):
 
 def crear_pedido(datos, comprobante=None, canal="web"):
     """Valida, calcula el total en el servidor, descuenta stock y guarda."""
+    if canal == "web" and CONFIG.get("solo_en_horario", True):
+        abierto, texto = estado_atencion()
+        if not abierto:
+            raise ErrorPedido(texto)
     items = datos.get("items") or []
     if not items:
         raise ErrorPedido("El pedido está vacío.")
@@ -316,8 +358,28 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(cuerpo)
 
+    def ip(self):
+        # Detrás del túnel de Cloudflare la dirección real viene en este encabezado.
+        return self.headers.get("CF-Connecting-IP") or self.client_address[0]
+
+    def bloqueado(self):
+        ahora = time.time()
+        fallas = [t for t in INTENTOS.get(self.ip(), []) if ahora - t < VENTANA_INTENTOS]
+        INTENTOS[self.ip()] = fallas
+        return len(fallas) >= MAX_INTENTOS
+
     def autorizado(self):
-        return secrets.compare_digest(self.headers.get("X-Pin", ""), str(CONFIG["pin_local"]))
+        if self.bloqueado():
+            return False
+        ok = secrets.compare_digest(self.headers.get("X-Pin", ""), str(CONFIG["pin_local"]))
+        if not ok:
+            INTENTOS.setdefault(self.ip(), []).append(time.time())
+        return ok
+
+    def rechazo_pin(self):
+        if self.bloqueado():
+            return self.json({"error": "Demasiados intentos. Probá de nuevo en 15 minutos."}, 429)
+        return self.json({"error": "PIN incorrecto"}, 401)
 
     def cuerpo_json(self):
         largo = int(self.headers.get("Content-Length") or 0)
@@ -338,14 +400,14 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json({"negocio": publico(), "productos": menu(con)})
         if ruta.startswith("/api/local/"):
             if not self.autorizado():
-                return self.json({"error": "PIN incorrecto"}, 401)
+                return self.rechazo_pin()
             return self.get_local(ruta, parse_qs(url.query))
         return self.json({"error": "No existe"}, 404)
 
     def get_local(self, ruta, q):
         with db() as con:
             if ruta == "/api/local/pedidos":
-                dia = (q.get("dia") or [datetime.now().strftime("%Y-%m-%d")])[0]
+                dia = (q.get("dia") or [ahora_local().strftime("%Y-%m-%d")])[0]
                 ids = [r[0] for r in con.execute("SELECT id FROM pedidos WHERE creado LIKE ? ORDER BY id DESC", (dia + "%",))]
                 return self.json({"pedidos": [pedido_completo(con, i) for i in ids], "estados": ESTADOS})
             if ruta == "/api/local/productos":
@@ -400,7 +462,7 @@ class Handler(BaseHTTPRequestHandler):
             if not ruta.startswith("/api/local/"):
                 return self.json({"error": "No existe"}, 404)
             if not self.autorizado():
-                return self.json({"error": "PIN incorrecto"}, 401)
+                return self.rechazo_pin()
             datos = self.cuerpo_json()
             if ruta == "/api/local/mostrador":
                 return self.json({"pedido": crear_pedido(datos, None, "mostrador")})
@@ -439,11 +501,15 @@ class Handler(BaseHTTPRequestHandler):
 
 def publico():
     claves = ["nombre", "whatsapp", "envio_costo", "envio_gratis_desde", "banco", "horario"]
-    return {k: CONFIG[k] for k in claves}
+    d = {k: CONFIG[k] for k in claves}
+    d["abierto"], d["atencion"] = estado_atencion()
+    if not CONFIG.get("solo_en_horario", True):
+        d["abierto"] = True
+    return d
 
 
 if __name__ == "__main__":
     iniciar_db()
     puerto = int(os.environ.get("PUERTO", CONFIG.get("puerto", 8080)))
     print(f"Arepalandia pedidos en http://localhost:{puerto}  (local: /local)")
-    ThreadingHTTPServer(("0.0.0.0", puerto), Handler).serve_forever()
+    ThreadingHTTPServer((os.environ.get("HOST") or CONFIG.get("escuchar", "127.0.0.1"), puerto), Handler).serve_forever()

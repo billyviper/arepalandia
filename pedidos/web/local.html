@@ -122,6 +122,7 @@ async function api(ruta, datos){
   if (datos !== undefined){ op.method = 'POST'; op.body = JSON.stringify(datos); op.headers['Content-Type'] = 'application/json'; }
   const r = await fetch(ruta, op);
   if (r.status === 401){ salir(); throw new Error('PIN incorrecto'); }
+  if (r.status === 429){ const d = await r.json(); $('#login-error').textContent = d.error; throw new Error(d.error); }
   const d = await r.json(); if (!r.ok) throw new Error(d.error || 'Error'); return d;
 }
 function salir(){ PIN = ''; try { localStorage.removeItem('pin'); } catch {} $('#app').classList.add('oculto'); $('#pantalla-login').classList.remove('oculto'); }
@@ -134,14 +135,21 @@ async function entrar(){
     const m = await (await fetch('/api/menu')).json(); negocio = m.negocio;
     $('#dia-ventas').value = hoy();
     await cargarProductos(); await cargarPedidos(); setInterval(cargarPedidos, 10000);
-  } catch (e) { $('#login-error').textContent = 'PIN incorrecto'; }
+  } catch (e) { $('#login-error').textContent = e.message || 'PIN incorrecto'; }
+}
+function conexion(ok){
+  let b = document.getElementById('sin-conexion');
+  if (!b){ b = document.createElement('div'); b.id = 'sin-conexion'; b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99;background:#c62828;color:#fff;font-weight:700;text-align:center;padding:10px'; b.textContent = 'Sin conexión con el servidor. Los pedidos nuevos se imprimen apenas vuelva.'; document.body.appendChild(b); }
+  b.style.display = ok ? 'none' : 'block';
 }
 function hoy(){ const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); }
 function hora(iso){ return iso.slice(11, 16); }
 
 // ---------- pedidos ----------
 async function cargarPedidos(){
-  const d = await api('/api/local/pedidos?dia=' + hoy());
+  let d;
+  try { d = await api('/api/local/pedidos?dia=' + hoy()); conexion(true); }
+  catch (e) { conexion(false); return; }
   estados = d.estados;
   const nuevos = d.pedidos.filter(p => !vistos.has(p.id) && p.canal === 'web');
   if (!primera && nuevos.length) sonar();
