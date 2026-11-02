@@ -1,0 +1,108 @@
+{
+ "nota": "Banco de hashtags y palabras de búsqueda de Arepalandia. seo.py lo usa para completar las publicaciones de Instagram del plan.",
+ "lugar": [
+  "#Mercedes",
+  "#MercedesUruguay",
+  "#Soriano",
+  "#SorianoUruguay",
+  "#Uruguay"
+ ],
+ "rubro": [
+  "#ComidaVenezolana",
+  "#ComidaVenezolanaEnUruguay",
+  "#SaborVenezolano",
+  "#VenezolanosEnUruguay"
+ ],
+ "servicio": [
+  "#DeliveryMercedes",
+  "#ComidaParaLlevar"
+ ],
+ "marca": [
+  "#Arepalandia"
+ ],
+ "productos": {
+  "arepa": {
+   "busca": [
+    "arepa",
+    "reina pepiada",
+    "perico",
+    "mechada"
+   ],
+   "hashtags": [
+    "#Arepas",
+    "#ArepasVenezolanas",
+    "#ArepaRellena"
+   ],
+   "frase": "arepas venezolanas en Mercedes",
+   "nombre": "Arepa venezolana"
+  },
+  "reina": {
+   "busca": [
+    "reina pepiada"
+   ],
+   "hashtags": [
+    "#ReinaPepiada"
+   ],
+   "frase": "Reina Pepiada en Mercedes",
+   "nombre": "Reina Pepiada"
+  },
+  "tequeños": {
+   "busca": [
+    "tequeño"
+   ],
+   "hashtags": [
+    "#Tequeños",
+    "#TequeñosVenezolanos",
+    "#QuesoLlanero"
+   ],
+   "frase": "tequeños en Mercedes",
+   "nombre": "Tequeños de queso llanero"
+  },
+  "empanadas": {
+   "busca": [
+    "empanada"
+   ],
+   "hashtags": [
+    "#Empanadas",
+    "#EmpanadasVenezolanas",
+    "#JuevesDeEmpanadas"
+   ],
+   "frase": "empanadas venezolanas en Mercedes",
+   "nombre": "Empanadas venezolanas"
+  },
+  "salchipapas": {
+   "busca": [
+    "salchipapa"
+   ],
+   "hashtags": [
+    "#Salchipapas",
+    "#Salchipapa",
+    "#ComidaCallejera"
+   ],
+   "frase": "salchipapas en Mercedes",
+   "nombre": "Salchipapas"
+  },
+  "pastelitos": {
+   "busca": [
+    "pastelito"
+   ],
+   "hashtags": [
+    "#Pastelitos",
+    "#PastelitosAndinos"
+   ],
+   "frase": "pastelitos venezolanos en Mercedes",
+   "nombre": "Pastelitos"
+  }
+ },
+ "palabras_busqueda": [
+  "comida venezolana en Mercedes",
+  "arepas en Mercedes Uruguay",
+  "delivery de comida en Mercedes Soriano",
+  "tequeños en Mercedes",
+  "salchipapas en Mercedes",
+  "empanadas venezolanas Mercedes",
+  "dónde comer en Mercedes de noche",
+  "comida para llevar Mercedes"
+ ],
+ "maximo_hashtags": 12
+}

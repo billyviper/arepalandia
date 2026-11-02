@@ -82,6 +82,11 @@ footer{text-align:center;color:var(--suave);font-size:.8rem;margin-top:30px}
   </section>
 
   <section>
+    <h2>Hashtags y búsqueda</h2>
+    <p style="font-size:.9rem;margin-top:0">Las publicaciones de Instagram ya traen sus hashtags. Si haces una por tu cuenta, copia el grupo que corresponda. En los estados de WhatsApp no hace falta poner hashtags.</p>
+    <div id="hashtags"></div>
+  </section>
+  <section>
     <h2>Respuestas rápidas</h2>
     <div id="respuestas"></div>
   </section>
@@ -144,6 +149,7 @@ function tarjeta(p, atrasada){
     <textarea class="texto"></textarea>
     <div class="paso"><div class="num">3</div><p>Toca compartir y elige ${p.donde.includes('Instagram')?'Instagram':'WhatsApp'}. El texto ya queda copiado: si no aparece, mantén apretado y pega.</p></div>
     <button class="b-azul compartir">Compartir</button>
+    <div class="alt-box" style="display:none"><p style="font-size:.9rem;margin:10px 0 4px">Para que te encuentren en las búsquedas: en Instagram, antes de publicar, toca <b>Configuración avanzada › Escribir texto alternativo</b> y pega esto:</p><p class="alt-txt" style="background:#fff;border:1px dashed #c9c2b0;border-radius:8px;padding:8px;font-size:.9rem;margin:0 0 6px"></p><button class="b-gris copiar-alt">Copiar texto alternativo</button></div>
     <div class="fila"><button class="b-gris copiar">Copiar texto</button><button class="b-verde listo">${hecha(p.id)?'Publicado ✔':'Ya lo publiqué'}</button></div>`;
   el.querySelector('h3').textContent = p.titulo;
   el.querySelector('.foto-txt').textContent = p.foto;
@@ -160,6 +166,7 @@ function tarjeta(p, atrasada){
     if (f.type.startsWith('image/')) { img.src = URL.createObjectURL(f); img.style.display='block'; }
     aviso('Foto lista ✔');
   }));
+  if (p.alt) { el.querySelector('.alt-box').style.display = 'block'; el.querySelector('.alt-txt').textContent = p.alt; el.querySelector('.copiar-alt').onclick = () => copiar(p.alt); }
   el.querySelector('.copiar').onclick = () => copiar(textoDe(p));
   el.querySelector('.compartir').onclick = () => compartir(p);
   el.querySelector('.listo').onclick = () => {
@@ -201,6 +208,12 @@ $('#resumen').onclick = () => {
   location.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
 };
 
+function pintarHashtags(){
+  const h = $('#hashtags'); if (!h) return; h.innerHTML = '';
+  const banco = plan.hashtags_banco || {};
+  Object.entries(banco).forEach(([g, tags]) => { const d=document.createElement('div'); d.className='resp'; d.innerHTML='<b></b><p></p><button class="b-gris">Copiar</button>'; d.querySelector('b').textContent=g; d.querySelector('p').textContent=tags.join(' '); d.querySelector('button').onclick=()=>copiar(tags.join(' ')); h.appendChild(d); });
+  if ((plan.palabras_busqueda||[]).length){ const d=document.createElement('div'); d.className='resp'; d.innerHTML='<b>Lo que la gente busca</b><p></p>'; d.querySelector('p').textContent='Usa estas frases en los textos y en la descripción del perfil: '+plan.palabras_busqueda.join(' · '); h.appendChild(d); }
+}
 function pintarRespuestas(){
   const r = $('#respuestas'); r.innerHTML='';
   (plan.respuestas||[]).forEach(x => { const d=document.createElement('div'); d.className='resp'; d.innerHTML='<b></b><p></p><button class="b-gris">Copiar</button>'; d.querySelector('b').textContent=x.titulo; d.querySelector('p').textContent=x.texto; d.querySelector('button').onclick=()=>copiar(x.texto); r.appendChild(d); });
@@ -214,7 +227,7 @@ async function iniciar(){
   if (!plan) { $('#hoy').innerHTML = '<div class="vacio">No se pudo cargar el plan. Revisa el internet y vuelve a abrir.</div>'; return; }
   $('#sub').textContent = fechaLarga(hoyISO()).replace(/^./, c => c.toUpperCase());
   $('#pie').textContent = 'Plan de la semana: ' + plan.semana + (plan.promo ? ' · Promo: ' + plan.promo : '');
-  pintar(); pintarRespuestas();
+  pintar(); pintarRespuestas(); pintarHashtags();
 }
 iniciar();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
