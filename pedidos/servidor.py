@@ -110,6 +110,12 @@ def iniciar_db():
                         "INSERT INTO productos (numero,nombre,detalle,categoria,precio,opciones,stock) VALUES (?,?,?,?,?,?,?)",
                         (p["numero"], p["nombre"], p.get("detalle", ""), p["categoria"], p["precio"],
                          json.dumps(p.get("opciones", []), ensure_ascii=False), p.get("stock")))
+        else:
+            # Si se agregan opciones nuevas en menu.json (p. ej. sabores), se copian a la base.
+            with open(os.path.join(BASE, "menu.json"), encoding="utf-8") as f:
+                for p in json.load(f):
+                    con.execute("UPDATE productos SET opciones = ? WHERE numero = ?",
+                                (json.dumps(p.get("opciones", []), ensure_ascii=False), p["numero"]))
 
 
 def ahora():
@@ -174,7 +180,7 @@ def crear_pedido(datos, comprobante=None, canal="web"):
             p = productos[num]
             opcion = limpiar(it.get("opcion"), 40)
             if p["opciones"] and opcion not in p["opciones"]:
-                raise ErrorPedido(f"Elegí el relleno de {p['nombre']}.")
+                raise ErrorPedido(f"Elegí el {'sabor' if p['categoria'] == 'Bebidas' else 'relleno'} de {p['nombre']}.")
             pedidos_por_numero[num] = pedidos_por_numero.get(num, 0) + cant
             importe = p["precio"] * cant
             subtotal += importe

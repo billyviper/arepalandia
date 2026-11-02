@@ -175,7 +175,7 @@ function pintarMenu(){
       let sel = null;
       if (p.opciones.length){
         sel = document.createElement('select');
-        sel.innerHTML = '<option value="">Elegí el relleno</option>' + p.opciones.map(o => `<option>${o}</option>`).join('');
+        sel.innerHTML = `<option value="">Elegí el ${p.categoria === 'Bebidas' ? 'sabor' : 'relleno'}</option>` + p.opciones.map(o => `<option>${o}</option>`).join('');
         ctrl.appendChild(sel);
       }
       const menos = document.createElement('button'); menos.className = 'menos'; menos.textContent = '−'; menos.setAttribute('aria-label', 'Sacar uno');

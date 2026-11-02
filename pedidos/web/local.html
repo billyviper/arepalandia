@@ -252,7 +252,7 @@ function pintarBotones(){
     b.onclick = () => {
       let op = '';
       if (p.opciones.length){
-        op = prompt('Relleno: ' + p.opciones.map((o, i) => `${i + 1}=${o}`).join(', '));
+        op = prompt((p.categoria === 'Bebidas' ? 'Sabor: ' : 'Relleno: ') + p.opciones.map((o, i) => `${i + 1}=${o}`).join(', '));
         if (op === null) return; op = p.opciones[Number(op) - 1] || p.opciones.find(o => o.toLowerCase() === op.trim().toLowerCase());
         if (!op) return alert('Relleno no válido');
       }

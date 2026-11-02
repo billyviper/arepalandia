@@ -163,10 +163,17 @@
  {
   "numero": 17,
   "nombre": "Refresco Limol",
-  "detalle": "600 ml",
+  "detalle": "600 ml. Elegí el sabor.",
   "categoria": "Bebidas",
   "precio": 50,
-  "opciones": [],
+  "opciones": [
+   "Naranja",
+   "Pomelo",
+   "Cola",
+   "Uva",
+   "Guaraná",
+   "Lima limón"
+  ],
   "stock": null
  },
  {
