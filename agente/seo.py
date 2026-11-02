@@ -23,9 +23,15 @@ def sin_hashtags(texto):
     return "\n".join(lineas).rstrip()
 
 
+PRECIO = re.compile(r"\$\s?\d|\d+\s?(pesos|uyu)\b", re.I)
 for p in plan["publicaciones"]:
     if "Instagram" not in p["donde"]:
         continue
+    # Regla de Arepalandia: en Instagram no se publican precios. Se sacan las frases que los tengan.
+    if PRECIO.search(p["texto"]):
+        partes = re.split(r"(?<=[.!?])\s+", p["texto"])
+        p["texto"] = " ".join(x for x in partes if not PRECIO.search(x))
+        print("Aviso: saqué un precio del texto de", p["id"])
     prods = productos_de(p)
     tags = []
     for k in reversed(prods):
@@ -35,10 +41,13 @@ for p in plan["publicaciones"]:
     frases = [seo["productos"][k]["frase"] for k in prods if seo["productos"][k]["frase"]]
     frase = frases[-1] if frases else "comida venezolana en Mercedes"
     # Instagram hoy busca por palabras del texto, no solo por hashtags: dejamos una línea con lo que la gente escribe.
-    ubic = f"📍 {frase[0].upper() + frase[1:]}, Soriano. Comida venezolana con delivery."
+    ubic = f"📍 {frase[0].upper() + frase[1:]}, Soriano. Delivery y para llevar."
     p["hashtags"] = tags
     p["texto"] = sin_hashtags(p["texto"]) + "\n\n" + ubic + "\n\n" + " ".join(tags)
     nombre = seo["productos"][prods[-1]]["nombre"] if prods else "Comida"
+    if "Reel" in p["donde"]:
+        p.pop("alt", None)
+        continue
     p["alt"] = f"{nombre} de Arepalandia, comida venezolana en Mercedes, Uruguay. {p.get('alt_foto', '')}".strip()
 
 plan["palabras_busqueda"] = seo["palabras_busqueda"]
