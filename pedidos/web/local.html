@@ -69,7 +69,7 @@ select,input[type=number]{font-size:1rem;padding:8px;border-radius:8px;border:1p
   </nav>
 </header>
 <main>
-  <section id="tab-pedidos"><div class="grid" id="lista-pedidos"></div></section>
+  <section id="tab-pedidos"><p><label style="font-weight:400"><input type="checkbox" id="auto-imprimir" checked style="width:20px;height:20px;vertical-align:middle"> Imprimir automáticamente cada pedido nuevo (ticket para enviar + comanda)</label></p><div class="grid" id="lista-pedidos"></div></section>
 
   <section id="tab-mostrador" class="oculto">
     <div class="mostrador">
@@ -146,7 +146,7 @@ async function cargarPedidos(){
   const nuevos = d.pedidos.filter(p => !vistos.has(p.id) && p.canal === 'web');
   if (!primera && nuevos.length) sonar();
   d.pedidos.forEach(p => vistos.add(p.id)); primera = false;
-  pedidos = d.pedidos; pintarPedidos();
+  pedidos = d.pedidos; pintarPedidos(); autoImprimir();
 }
 function pintarPedidos(){
   const web = pedidos.filter(p => p.canal === 'web');
@@ -170,7 +170,7 @@ function pintarPedidos(){
                  'en preparación': p.entrega === 'delivery' ? 'enviado' : 'entregado', 'enviado': 'entregado'}[p.estado];
     if (sig) boton(b, 'Marcar: ' + sig, 'b-azul', () => cambiarEstado(p.id, sig));
     if (p.comprobante) boton(b, 'Ver comprobante', '', () => verComprobante(p.id));
-    boton(b, 'Imprimir', '', () => imprimir(p));
+    boton(b, 'Reimprimir', '', () => imprimir(p));
     if (p.telefono) boton(b, 'WhatsApp', '', () => window.open(`https://wa.me/${p.telefono.replace(/\D/g, '').replace(/^0/, '598')}`));
     if (!['entregado', 'cancelado'].includes(p.estado)) boton(b, 'Cancelar', 'b-rojo', () => { if (confirm('¿Cancelar el pedido #' + p.id + '? Se devuelve el stock.')) cambiarEstado(p.id, 'cancelado'); });
     cont.appendChild(d);
@@ -192,14 +192,15 @@ function sonar(){
   document.title = '🔔 Pedido nuevo · Arepalandia'; setTimeout(() => document.title = 'Arepalandia · Local', 8000);
 }
 
-// ---------- ticket 80 mm ----------
-function imprimir(p){
+// ---------- tickets 80 mm: uno para enviar y otro de comanda ----------
+const ESTILO_TICKET = `@page{size:80mm auto;margin:3mm}body{font-family:monospace;font-size:13px;width:72mm;margin:0}
+  h1{font-size:18px;text-align:center;margin:0}p{margin:2px 0}table{width:100%;border-collapse:collapse}td{padding:2px 0;vertical-align:top}
+  .t{font-size:17px;font-weight:bold;border-top:1px dashed #000;margin-top:4px;padding-top:4px}.c{text-align:center}
+  .hoja{page-break-after:always;break-after:page}.hoja:last-child{page-break-after:auto;break-after:auto}
+  .grande{font-size:22px;font-weight:bold}.item{font-size:18px;font-weight:bold;margin:6px 0}.item small{font-size:15px;font-weight:normal}`;
+function ticketEnvio(p){
   const lineas = p.items.map(i => `<tr><td>${i.cantidad}× ${esc(i.nombre)}${i.opcion ? '<br><small>' + esc(i.opcion) + '</small>' : ''}</td><td style="text-align:right">${pesos(i.importe)}</td></tr>`).join('');
-  const html = `<!doctype html><html><head><meta charset="utf-8"><style>
-    @page{size:80mm auto;margin:3mm}body{font-family:monospace;font-size:13px;width:72mm;margin:0}
-    h1{font-size:18px;text-align:center;margin:0}p{margin:2px 0}table{width:100%;border-collapse:collapse}td{padding:2px 0;vertical-align:top}
-    .t{font-size:17px;font-weight:bold;border-top:1px dashed #000;margin-top:4px;padding-top:4px}.c{text-align:center}</style></head><body>
-    <h1>AREPALANDIA</h1><p class="c">Sabor venezolano · 091 507 257</p><p class="c">Comprobante no fiscal</p><hr>
+  return `<div class="hoja"><h1>AREPALANDIA</h1><p class="c">Sabor venezolano · 091 507 257</p><p class="c">Comprobante no fiscal</p><hr>
     <p><b>Pedido #${p.id}</b> · ${p.creado.slice(0, 10)} ${hora(p.creado)}</p>
     <p>${esc(p.nombre)}${p.telefono ? ' · ' + esc(p.telefono) : ''}</p>
     ${p.entrega === 'delivery' ? `<p><b>Delivery:</b> ${esc(p.direccion)}</p>` : `<p><b>${p.entrega === 'retiro' ? 'Retira en el local' : 'Mostrador'}</b></p>`}
@@ -207,9 +208,37 @@ function imprimir(p){
     ${p.envio ? `<tr><td>Envío</td><td style="text-align:right">${pesos(p.envio)}</td></tr>` : ''}</table>
     <p class="t">TOTAL ${pesos(p.total)}</p>
     <p>Pago: ${p.pago}${p.paga_con ? ` · paga con ${pesos(p.paga_con)} · cambio ${pesos(p.cambio)}` : ''}</p>
-    <p class="c" style="margin-top:8px">¡Gracias, pana!</p></body></html>`;
-  const f = $('#impresion'); f.srcdoc = html;
-  f.onload = () => { f.contentWindow.focus(); f.contentWindow.print(); };
+    <p class="c" style="margin-top:8px">¡Gracias, pana!</p></div>`;
+}
+function ticketComanda(p){
+  const items = p.items.map(i => `<div class="item">${i.cantidad} × ${esc(i.nombre)}${i.opcion ? `<br><small>→ ${esc(i.opcion)}</small>` : ''}</div>`).join('');
+  return `<div class="hoja"><p class="c grande">COMANDA #${p.id}</p>
+    <p class="c">${hora(p.creado)} · ${p.entrega === 'delivery' ? 'DELIVERY' : p.entrega === 'retiro' ? 'RETIRA' : 'MOSTRADOR'} · ${esc(p.nombre)}</p><hr>
+    ${items}${p.nota ? `<hr><p class="item">NOTA: ${esc(p.nota)}</p>` : ''}</div>`;
+}
+const colaImpresion = [];
+let imprimiendo = false;
+function imprimir(p, cuales = ['envio', 'comanda']){
+  const cuerpo = cuales.map(c => c === 'envio' ? ticketEnvio(p) : ticketComanda(p)).join('');
+  colaImpresion.push(`<!doctype html><html><head><meta charset="utf-8"><style>${ESTILO_TICKET}</style></head><body>${cuerpo}</body></html>`);
+  siguienteImpresion();
+}
+function siguienteImpresion(){
+  if (imprimiendo || !colaImpresion.length) return;
+  imprimiendo = true;
+  const f = $('#impresion');
+  f.onload = () => { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(() => { imprimiendo = false; siguienteImpresion(); }, 1500); };
+  f.srcdoc = colaImpresion.shift();
+}
+// Imprime solo los pedidos web nuevos que todavía no salieron por esta impresora.
+function impresos(){ try { return JSON.parse(localStorage.getItem('impresos') || '[]'); } catch { return []; } }
+function marcarImpreso(id){ try { const l = impresos(); l.push(id); localStorage.setItem('impresos', JSON.stringify(l.slice(-300))); } catch {} }
+function autoImprimir(){
+  if (!$('#auto-imprimir').checked) return;
+  const ya = impresos();
+  for (const p of [...pedidos].reverse()){
+    if (p.canal === 'web' && p.estado !== 'cancelado' && !ya.includes(p.id)){ imprimir(p); marcarImpreso(p.id); }
+  }
 }
 
 // ---------- mostrador ----------
